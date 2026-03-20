@@ -1,0 +1,25 @@
+{
+    "name": "Debian Dev Environment",
+    "build": {
+        "dockerfile": "Dockerfile"
+    },
+    "updateRemoteUserUID": true,
+    "features": {
+        // NOTE: using dotfiles from DevContainer may delay or even fail setting git configs.
+        // After the dotfiles are installed, the following will be issued.
+        // [159303 ms] Start: Run in container: # Test for /home/devuser/.gitconfig and git
+        // [159306 ms] Start: Run in container: # Copy /home/daisuke/.gitconfig to /home/devuser/.gitconfig
+        // [159313 ms] Start: Run in container: # Cleaning up git config
+        // [159329 ms] Start: Run in Host: git config --global --get gpg.ssh.allowedSignersFile
+        // [159329 ms] Start: Run in container: command -v git >/dev/null 2>&1 && git config --global --replace-all credential.helper '!f() { /home/devuser/.vscode-server/bin/ce099c1ed25d9eb3076c11e4a280f3eb52b4fbeb/node /tmp/vscode-remote-containers-4b4f18ca-4b98-4c89-aba2-a9d7228479a8.js git-credential-helper $*; }; f' || true
+        "ghcr.io/devcontainers/features/git:1": { // Only needed when the Devcontainer does not provide a decent git binary.
+            // "version": "os-provided"  // The default. When the VSCode is running on Windows and DevContainer on WSL, seems the Windows' git is passed.The understanding is important for managing credentials.  (If the git feature is not used, the credential seems to be from WSL.) 
+        }
+    },
+    // "customizations": {
+    //     "vscode": {
+    //         "extensions": [
+    //         ]
+    //     }
+    // }
+}

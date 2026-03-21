@@ -31,7 +31,7 @@ p_origin_y: 0;
 
 /* This p_origin is on the surface of the corn. */
 
-p_origin_x = - p_origin_z $ /* Using the fact that it is in the x-z plane, and that the cone is made by revolving the right triangle.*/
+p_origin_x: - p_origin_z $ /* Using the fact that it is in the x-z plane, and that the cone is made by revolving the right triangle.*/
 P_origin_x > 0 $ /* It's on the x-positive side in the plane. */
 
 /* The plane normal of p*/
@@ -61,7 +61,7 @@ sphere_radius$ /* No condition set for now. */
 /* Point E on the sphere touches the cone. */
 E: [E_x, E_y, E_z]$
 
-   /* For simplicity, we set its x-coordinate to 0. This is not necessary.*/
+   /* For simplicity, we set its x-coordinate to 0. This is mathematically not necessary.*/
    E_x: 0$
    E_y < 0$ /* We need only one of the possible Es.*/
    
@@ -74,25 +74,13 @@ sphere_radius: dist(E, sphere_center)$
 
 /* The sphere above decides the position of the plane p.*/
 
-disp(sphere_center);
-disp(sphere_radius);
-disp(c_z);
+eq2: dist(E, [0,0,0]) / dist(sphere_center, [0, 0, 0]) = cos( %pi / 4);
+eq2: lhs(eq2)^2 = rhs(eq2)^2; /*Get rid of division (/).*/
+
+/*ratsimp(eq2sq); expand(eq2sq);*/ /*Not needed this time*/
 
 solve(
-   [dist(sphere_center, [0, 0, 0]) = 1],
-   [cz]
-);
-solve(
-   [dist(sphere_center, [0, 0, 0]) = 1,
-    cz < 0
-   ],
-   [cz]
-);
-
-solve(
-   [E_z = -1,
-    dist(E, [0,0,0]) / dist(sphere_center, [0, 0, 0]) = cos( %pi / 4)
-   ], 
+   [E_z = -1, eq2sq], 
    [E_y, cz]
 );
 

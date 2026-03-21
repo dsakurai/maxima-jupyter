@@ -61,6 +61,8 @@ E: [E_x, E_y, E_z]$
 
    /* For simplicity, we set its x-coordinate to 0. This is mathematically not necessary.*/
    E_x: 0$
+   
+   /*FIXME not in use (we achieve this by setting E_z to negative.)*/
    E_y < 0$ /* We need only one of the possible Es.*/
    
    /* The above simplicity gives us a simple way to constrain E on the surface of the corn. */

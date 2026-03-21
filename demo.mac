@@ -1,0 +1,64 @@
+/* Run this script like
+   ```
+       maxima -b demo.mac
+   ```
+*/
+
+/*debugmode(true);*/
+
+/* The goal is to recreate Figure 2.2.4 from the book "Genius of Gaudi":
+   - Alsina, Claudi, and Roger B. Nelsen. The Genius of Gaudí: Geometry and Architecture. Vol. 106. American Mathematical Society, 2025.
+*/
+
+/* We assume a right-hand coordinating system, which is used by most computer graphics software.
+   We set z-axis to be the vertical axis.
+*/
+
+
+/* The plane p that introduces conic section.
+   We charecterize its position using the heighest point of the conic intersection curve.
+   That is indeed the origin of the Cartesian coordinates in p that characterizes the curve as the quadratic curve.
+*/
+
+p_origin: [p_origin_x, p_origin_y, p_origin_z];
+
+
+/* We can assume its point to have y-coordinate 0, without losing generality. */
+
+p_origin_y: 0;
+
+/* This p_origin is on the surface of the corn. */
+
+p_origin_x = - p_origin_z $ /* Using the fact that it is in the x-z plane, and that the cone is made by revolving the right triangle.*/
+P_origin_x > 0 $ /* It's on the x-positive side in the plane. */
+
+/* The plane normal of p*/
+
+p_normal = [1/sqrt(2), 0, -1/sqrt(2)] $
+
+/* A definition of a plane */
+
+is_on_plane( /*point*/ X, /*reference point*/ Q, /*normal*/ normal) :=
+   block(
+      [v], /* local variable*/
+      v: X - Q, /*relative position*/
+      v[1] * normal[1] + v[2] * normal[2] + v[3] * normal[3] = 0 /* has no component towards the normal direction */
+   )$
+
+/* Point X on the plane p means this: */
+is_on_p(X) := is_on_plane(X, F, p_normal);
+
+/* Sphere */
+sphere_center: [0, 0, cz];
+sphere_radius$ /* No condition set for now. */
+
+/* Point F: the focal point of the parabola curve. */
+
+F: [F_x, F_y, F_z] $
+
+F_y: 0 $ /* F is on the x-z plane. */
+
+is_on_p(F) $ /* F is on plane p*/
+
+/* The horizontal plane p' in the book, but ' cannot be used in maxima */
+/* p_z = */

@@ -6,8 +6,6 @@
 
 /*debugmode(true);*/
 
-myrules: []$
-
 /* The goal is to recreate Figure 2.2.4 from the book "Genius of Gaudi":
    - Alsina, Claudi, and Roger B. Nelsen. The Genius of Gaudí: Geometry and Architecture. Vol. 106. American Mathematical Society, 2025.
 */
@@ -75,14 +73,21 @@ sphere_radius: dist(E, sphere_center)$
 /* The sphere above decides the position of the plane p.*/
 
 eq2: dist(E, [0,0,0]) / dist(sphere_center, [0, 0, 0]) = cos( %pi / 4);
-eq2: lhs(eq2)^2 = rhs(eq2)^2; /*Get rid of division (/).*/
+eq2sq: lhs(eq2)^2 = rhs(eq2)^2; /*Get rid of division (/) to turn it into a polynomial expression.*/
 
 /*ratsimp(eq2sq); expand(eq2sq);*/ /*Not needed this time*/
 
-solve(
+solutions : solve(
    [E_z = -1, eq2sq], 
    [E_y, cz]
 );
+
+/*Select the negative solution*/
+for s in solutions do (
+  if ev(rhs(second(s)), cz) < 0 then solution: s
+);
+
+solution;
 
 /*
    /* Point F: the focal point of the parabola curve. */

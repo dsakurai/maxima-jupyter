@@ -7,7 +7,6 @@
     "postCreateCommand": ".devcontainer/postCreateCommand.sh",
     "features": {
         "ghcr.io/devcontainers/features/nix:1": {},
-        "ghcr.io/jsburckhardt/devcontainer-features/uv:1": {},
         // NOTE: using dotfiles from DevContainer may delay or even fail setting git configs.
         // After the dotfiles are installed, the following will be issued.
         // [159303 ms] Start: Run in container: # Test for /home/devuser/.gitconfig and git
@@ -22,17 +21,11 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ms-toolsai.jupyter",
-                "ms-python.python"
             ],
             "settings": {
-                // Specify the path to Python and to the virtual environment.
-                "python.defaultInterpreterPath" : "/workspaces/${localWorkspaceFolderBasename}/.venv/bin/python",
-                "python.venvPath": "/workspaces/${localWorkspaceFolderBasename}/.venv"
             }
         }
     },
     "containerEnv": {
-        "UV_PROJECT_ENVIRONMENT": "/workspaces/${localWorkspaceFolderBasename}/.venv"
     }
 }

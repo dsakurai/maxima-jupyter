@@ -1,110 +1,45 @@
-/* Run this script like
-   ```
-       maxima -b demo.mac
-   ```
-*/
+/* demo.mac -- Maxima batch demo: solve, ratsimp, expand */
 
-/*debugmode(true);*/
+/* 1) Simple quadratic solve */
+print("1) Quadratic solve:");
+eq1: x^2 - 5*x + 6 = 0;
+sols1: solve(eq1, x);
+print("solutions:", sols1);
+for r in sols1 do print("root:", r);
 
-/* The goal is to recreate Figure 2.2.4 from the book "Genius of Gaudi":
-   - Alsina, Claudi, and Roger B. Nelsen. The Genius of Gaudí: Geometry and Architecture. Vol. 106. American Mathematical Society, 2025.
-*/
+/* 2) Rational simplification vs expansion */
+print("");
+print("2) Rational simplification and expansion:");
+expr: (x^3 - 1)/(x - 1);
+print("original:", expr);
+print("ratsimp ->", ratsimp(expr));
+print("expand ->", expand(expr));
 
-/* We assume a right-hand coordinating system, which is used by most computer graphics software.
-   We set z-axis to be the vertical axis.
-*/
-
-
-/* A definition of a plane */
-
-is_on_plane( /*point*/ X, /*reference point*/ Q, /*normal*/ normal) :=
-   block(
-      [v], /* local variable*/
-      v: X - Q, /*relative position*/
-      v[1] * normal[1] + v[2] * normal[2] + v[3] * normal[3] = 0 /* has no component towards the normal direction */
-   )$
-
-/* Euclidean distance */
-
-dist(A, B) := sqrt( (A[1]-B[1])^2 + (A[2]-B[2])^2 + (A[3]-B[3])^2 )$
-
-
-/* Sphere */
-sphere_center: [0, 0, c_z];
-sphere_radius$ /* No condition set for now. */
-
-/* Point E on the sphere touches the cone. */
-E: [E_x, E_y, E_z]$
-
-   /* For simplicity, we set its x-coordinate to 0. This is mathematically not necessary.*/
-   E_x: 0$
-   
-   /* The above simplicity gives us a simple way to constrain E on the surface of the corn. */
-   /*E_in_yz_plane: E_z = E_y$*/
-   E_z: E_y$
-
-
-/* Using that E is on the sphere, we can determine the sphere radius. */
-sphere_radius: dist(E, sphere_center)$
-
-/* The sphere above decides the position of the plane p.*/
-
-eq2: dist(E, [0,0,0]) / dist(sphere_center, [0, 0, 0]) = cos( %pi / 4);
-eq2sq: lhs(eq2)^2 = rhs(eq2)^2; /*Get rid of division (/) to turn it into a polynomial expression.*/
-
-/*ratsimp(eq2sq); expand(eq2sq);*/ /*Not needed this time*/
-
-solutions : solve(
-   [E_z = -1, eq2sq], 
-   [E_y, c_z]
+/* 3) Linear system: solve, substitute, ratsimp */
+print("");
+print("3) Linear system solve and substitute:");
+sys: [ x + 2*y = 5, 3*x + 4*y = 11 ];
+linsols: solve(sys, [x, y]);
+print("solution(s):", linsols);
+for s in linsols do (
+  print("substitution with", s),
+  expr2: (x^2 + y^2)/(x + y),
+  print("raw substitution ->", subst(s, expr2)),
+  print("ratsimp(subst) ->", ratsimp(subst(s, expr2)))
 );
 
-/*Select the negative solution for c_z.*/
-for s in solutions do (
-  c_z_: assoc(c_z, s), /* Extract c_z from the solution s */
-  if c_z_ < 0
-     then solution: s
+/* 4) Nonlinear system: show expand and substitution */
+print("");
+print("4) Nonlinear system and expansion:");
+nlsys: [ x*y = 6, x + y = 5 ];
+nlsols: solve(nlsys, [x, y]);
+print("solution(s):", nlsols);
+for s in nlsols do (
+  print("solution:", s),
+  print("expand((x+y)^3) ->", expand((x + y)^3)),
+  print("expanded with solution ->", subst(s, expand((x + y)^3)))
 );
 
-solution;
+print("");
+print("Demo finished.");
 
-
-/* The plane p that introduces conic section.
-   We charecterize its position using the heighest point of the conic intersection curve.
-   That is indeed the origin of the Cartesian coordinates in p that characterizes the curve as the quadratic curve.
-*/
-
-p_origin: [p_origin_x, p_origin_y, p_origin_z];
-
-
-/* We can assume its point to have y-coordinate 0, without losing generality. */
-
-p_origin_y: 0;
-
-/* This p_origin is on the surface of the corn. */
-
-p_origin_x: - p_origin_z $ /* Using the fact that it is in the x-z plane, and that the cone is made by revolving the right triangle.*/
-P_origin_x > 0 $ /* It's on the x-positive side in the plane. */
-
-/* The plane normal of p*/
-
-p_normal: [1/sqrt(2), 0, -1/sqrt(2)] $
-
-/* Point X on the plane p means this: */
-is_on_p(X) := is_on_plane(X, F, p_normal);
-
-/*
-   /* Point F: the focal point of the parabola curve. */
-
-   F: [F_x, F_y, F_z] $
-
-   F_y: 0 $ /* F is on the x-z plane. */
-
-   is_on_p(F) $ /* F is on plane p*/
-
-   /* F is on the sphere */
-   dist(F, sphere_center) = sphere_radius
-
-   /* The horizontal plane p' in the book, but ' cannot be used in maxima */
-   /* p_z = */
-*/
